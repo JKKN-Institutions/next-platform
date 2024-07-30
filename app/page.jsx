@@ -1,65 +1,105 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-const IndiaTaxCalculator = () => {
-  const [income, setIncome] = useState('');
-  const [taxAmount, setTaxAmount] = useState(0);
-  const [effectiveTaxRate, setEffectiveTaxRate] = useState(0);
+const taxSlabs = [
+  { range: '0 - 2,50,000', rate: '0%' },
+  { range: '2,50,001 - 5,00,000', rate: '5%' },
+  { range: '5,00,001 - 7,50,000', rate: '10%' },
+  { range: '7,50,001 - 10,00,000', rate: '15%' },
+  { range: '10,00,001 - 12,50,000', rate: '20%' },
+  { range: '12,50,001 - 15,00,000', rate: '25%' },
+  { range: 'Above 15,00,000', rate: '30%' }
+];
 
-  const calculateTax = () => {
-    const incomeValue = parseFloat(income);
-    let tax = 0;
+const deductions = [
+  { section: '80C', description: 'Investments in PPF, ELSS, etc.', limit: '1,50,000' },
+  { section: '80D', description: 'Health Insurance Premium', limit: 'Varies' },
+  { section: '80E', description: 'Interest on Education Loan', limit: 'No limit' },
+  { section: '80G', description: 'Donations to Charitable Institutions', limit: 'Varies' }
+];
 
-    if (incomeValue <= 250000) {
-      tax = 0;
-    } else if (incomeValue <= 500000) {
-      tax = (incomeValue - 250000) * 0.05;
-    } else if (incomeValue <= 750000) {
-      tax = 12500 + (incomeValue - 500000) * 0.10;
-    } else if (incomeValue <= 1000000) {
-      tax = 37500 + (incomeValue - 750000) * 0.15;
-    } else if (incomeValue <= 1250000) {
-      tax = 75000 + (incomeValue - 1000000) * 0.20;
-    } else if (incomeValue <= 1500000) {
-      tax = 125000 + (incomeValue - 1250000) * 0.25;
-    } else {
-      tax = 187500 + (incomeValue - 1500000) * 0.30;
-    }
-
-    setTaxAmount(tax);
-    setEffectiveTaxRate((tax / incomeValue) * 100);
-  };
+const IndiaTaxLaws = () => {
+  const [activeTab, setActiveTab] = useState('taxSlabs');
 
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardTitle>India Income Tax Calculator</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid w-full items-center gap-4">
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="income">Annual Income (INR)</Label>
-            <Input
-              id="income"
-              placeholder="Enter your annual income"
-              value={income}
-              onChange={(e) => setIncome(e.target.value)}
-            />
-          </div>
-          <Button onClick={calculateTax}>Calculate Tax</Button>
-          {taxAmount > 0 && (
-            <div className="flex flex-col space-y-1.5">
-              <p>Tax Amount: ₹{taxAmount.toFixed(2)}</p>
-              <p>Effective Tax Rate: {effectiveTaxRate.toFixed(2)}%</p>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Learn Indian Income Tax Laws</h1>
+      
+      <div className="mb-4">
+        <Button 
+          onClick={() => setActiveTab('taxSlabs')} 
+          className={`mr-2 ${activeTab === 'taxSlabs' ? 'bg-blue-500' : 'bg-gray-300'}`}
+        >
+          Tax Slabs
+        </Button>
+        <Button 
+          onClick={() => setActiveTab('deductions')} 
+          className={activeTab === 'deductions' ? 'bg-blue-500' : 'bg-gray-300'}
+        >
+          Deductions
+        </Button>
+      </div>
+
+      {activeTab === 'taxSlabs' && (
+        <Card>
+          <CardHeader>Income Tax Slabs for FY 2023-24 (AY 2024-25)</CardHeader>
+          <CardContent>
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="text-left">Income Range (₹)</th>
+                  <th className="text-left">Tax Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {taxSlabs.map((slab, index) => (
+                  <tr key={index}>
+                    <td>{slab.range}</td>
+                    <td>{slab.rate}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === 'deductions' && (
+        <Card>
+          <CardHeader>Common Tax Deductions</CardHeader>
+          <CardContent>
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="text-left">Section</th>
+                  <th className="text-left">Description</th>
+                  <th className="text-left">Limit (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {deductions.map((deduction, index) => (
+                  <tr key={index}>
+                    <td>{deduction.section}</td>
+                    <td>{deduction.description}</td>
+                    <td>{deduction.limit}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      )}
+
+      <Alert className="mt-4">
+        <AlertTitle>Disclaimer</AlertTitle>
+        <AlertDescription>
+          This information is for educational purposes only. Tax laws may change. Consult a tax professional for personalized advice.
+        </AlertDescription>
+      </Alert>
+    </div>
   );
 };
 
-export default IndiaTaxCalculator;
+export default IndiaTaxLaws;
