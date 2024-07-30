@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,13 +22,11 @@ const deductions = [
   { section: '80G', description: 'Donations to Charitable Institutions', limit: 'Varies' }
 ];
 
-const IndiaTaxLaws = () => {
+const IndiaTaxLawsContent = () => {
   const [activeTab, setActiveTab] = useState('taxSlabs');
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Learn Indian Income Tax Laws</h1>
-      
       <div className="mb-4">
         <Button 
           onClick={() => setActiveTab('taxSlabs')} 
@@ -98,6 +98,15 @@ const IndiaTaxLaws = () => {
           This information is for educational purposes only. Tax laws may change. Consult a tax professional for personalized advice.
         </AlertDescription>
       </Alert>
+    </div>
+  );
+};
+
+const IndiaTaxLaws = () => {
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-4">Learn Indian Income Tax Laws</h1>
+      <IndiaTaxLawsContent />
     </div>
   );
 };
